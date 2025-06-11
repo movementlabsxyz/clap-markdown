@@ -363,17 +363,6 @@ fn build_command_markdown(
         }
     }
 
-    // There's a bug in the clap upstream that will cause after_long_help to be empty instead of None. This to checks if empty so that we don't short circuit if get_after_help is available. 
-    if let Some(help) = command.get_after_long_help() {
-        if !format!("{}", help).trim().is_empty() {
-            writeln!(buffer, "{}\n", help)?;
-        } else if let Some(help) = command.get_after_help() {
-            writeln!(buffer, "{}\n", help)?;
-        }
-    } else if let Some(help) = command.get_after_help() {
-        writeln!(buffer, "{}\n", help)?;
-    }
-
     //----------------------------------
     // Subcommands
     //----------------------------------
@@ -430,6 +419,12 @@ fn build_command_markdown(
         }
 
         write!(buffer, "\n")?;
+    }
+
+    if let Some(help) = command.get_after_long_help() {
+        writeln!(buffer, "{}\n", help)?;
+    } else if let Some(help) = command.get_after_help() {
+        writeln!(buffer, "{}\n", help)?;
     }
 
     //----------------------------------
